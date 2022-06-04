@@ -1,0 +1,18 @@
+server:
+  port: 9022
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/salon
+    username: dev
+    password: test@4$
+
+salon:
+  detail:
+    name: AR Salon and Day Spa Services
+    address: 1234 Main Street
+    city: Anytown
+    state: ND
+    zipcode: 58201
+    phone: 555-123-4567
+    baseUrl: localhost:9022

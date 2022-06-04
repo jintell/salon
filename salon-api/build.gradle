@@ -1,0 +1,38 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.13'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.jade.app'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Data JPA dependency
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Spring Boot Web and Rest dependency
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    // Postgres Database dependency
+    runtimeOnly 'org.postgresql:postgresql'
+    // Project Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
