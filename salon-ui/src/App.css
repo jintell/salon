@@ -30,7 +30,8 @@
 }
 
 .App-body {
-  padding: 10% 0;
+  width: 60%;
+  margin: 5% auto;
 }
 
 @keyframes App-logo-spin {
