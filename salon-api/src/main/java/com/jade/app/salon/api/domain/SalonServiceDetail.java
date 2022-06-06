@@ -1,5 +1,10 @@
 package com.jade.app.salon.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.databind.JsonSerializable;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +26,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(value = { "slots" })
 public class SalonServiceDetail implements Serializable {
 
     @Id
@@ -32,7 +38,7 @@ public class SalonServiceDetail implements Serializable {
     private Integer timeInMinutes;
     @Builder.Default
     @OneToMany(fetch= FetchType.LAZY, mappedBy="salonServiceDetail")
-    private List<Slot> slot = new ArrayList<>();
+    private List<Slot> slots = new ArrayList<>();
 
 
 }

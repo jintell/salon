@@ -34,7 +34,7 @@ public class SalonDetails {
     private String zipcode;
     private String phone;
     private String baseUrl;
-    private String basePackage = "com.jade.app.salon.api.repositories";
+    private String basePackage = "com.jade.app.salon.api.resource";
 
     @Bean
     public Docket api() {

@@ -33,7 +33,7 @@ public class Slot implements Serializable {
     @Column(name = "stylist_name")
     private String stylistName;
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="selected_service_id", unique=true, nullable=false)
+    @JoinColumn(name="selected_service_id", nullable=false)
     private SalonServiceDetail salonServiceDetail;
 
 }
