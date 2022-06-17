@@ -1,0 +1,13 @@
+.card-spacing {
+    margin-right: 2%;
+    margin-bottom: 5%;
+    float: left;
+}
+
+.slot-card-spacing {
+    margin-right: 2%;
+    margin-bottom: 5%;
+    float: left;
+    width: 30%;
+}
+
