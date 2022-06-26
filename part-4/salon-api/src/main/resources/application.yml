@@ -1,0 +1,30 @@
+server:
+  port: 9022
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/salon
+    username: dev
+    password: test@4$
+
+salon:
+  detail:
+    name: AR Salon and Day Spa Services
+    address: 1234 Main Street
+    city: Anytown
+    state: ND
+    zipcode: 58201
+    phone: 555-123-4567
+    baseUrl: localhost:9022
+
+
+stripe.api.payment.secret.key: sk_test_51LBjVEELzLxF89VlPMASYckOd1YuaDliI3gRYrpI3XkiKifeIVL69zCTIMJbNnG7STeqv0u3V4705EsfDXRp7BHu00twyL47nG
+stripe.endpoint.secret: whsec_a8a011dca8039f979bb4a6d1ad782f9d7f81bd2ebc0517bf36683e7438f3d83a
+
+domain:
+  url: http://localhost:${server.port}
+
+payment:
+  server:
+    url: /create-checkout-session
+    port: 9023
