@@ -20,6 +20,8 @@ public class CustomMapper {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .phoneNumber(request.getPhoneNumber())
+                .intendId(request.getIntentId())
+                .secretId(request.getClientSecret())
                 .selectedSalonService(availableService.getSalonServiceDetailId())
                 .selectedSlot(availableService.getSlotId())
                 .build();
@@ -38,7 +40,7 @@ public class CustomMapper {
                 .firstName(payment.getFirstName())
                 .lastName(payment.getLastName())
                 .intendId(payment.getIntendId())
-                .clientSecret("***************************")
+                .clientSecret(payment.getSecretId())
                 .phoneNumber(payment.getPhoneNumber())
                 .status(payment.getStatus())
                 .selectedSalonService(mapToSalonServiceDetailDto(payment.getSelectedSalonService()))

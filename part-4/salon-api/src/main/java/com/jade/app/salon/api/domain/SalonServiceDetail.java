@@ -23,7 +23,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value = { "slots" })
+@JsonIgnoreProperties(value = { "slots", "payments" })
 public class SalonServiceDetail implements Serializable {
 
     @Id

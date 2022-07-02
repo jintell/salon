@@ -18,6 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry
                 .addMapping("/**")
-                .allowedOrigins("http://localhost:3000"); // We can externalize this for easy config
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "OPTION", "PUT", "DELETE")
+                .allowedHeaders("*"); // We can externalize this for easy config
     }
 }

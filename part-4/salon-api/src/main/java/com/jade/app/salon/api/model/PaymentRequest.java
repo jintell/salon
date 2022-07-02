@@ -1,5 +1,6 @@
 package com.jade.app.salon.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,8 @@ public class PaymentRequest implements Serializable {
     private String lastName;
     private String email;
     private String phoneNumber;
+    @JsonIgnore
+    private String intentId;
+    @JsonIgnore
+    private String clientSecret;
 }

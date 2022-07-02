@@ -26,6 +26,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.net.Webhook;
+import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.jade.app.salon.api.config.PaymentServerInitiator.STRIPE_SECRET;
@@ -60,10 +63,13 @@ public class StripePaymentService {
     public StripePaymentResponse makePayment(PaymentRequest request) {
         SlotAvailableService availableService
                 = paymentValidator.validateAvailability(request.getSlotId(), request.getSalonServiceDetailId());
-        createPaymentIntent(availableService);
+        PaymentIntent paymentIntent = createPaymentIntent(availableService);
+        // update payment request
+        request.setClientSecret(paymentIntent.getClientSecret());
+        request.setIntentId(paymentIntent.getId());
         //Create Payment Record in DB
         StripePayment payment = paymentRepository.save(CustomMapper.mapPayment(request, availableService));
-        // Update Slot
+        // Update Slot to locked -1
         Slot selectedSlot = availableService.getSlotId();
         selectedSlot.setSalonServiceDetail(payment.getSelectedSalonService());
         updateSlot(selectedSlot, 1);
@@ -76,38 +82,28 @@ public class StripePaymentService {
         );
     }
 
-    private void createPaymentIntent(SlotAvailableService availableService) {
+    private PaymentIntent createPaymentIntent(SlotAvailableService availableService) {
         if(availableService.getSalonServiceDetailId().getPrice() < 50) throw new SalonException("Amount too low");
-                post(paymentServerUrl, ((request, response) -> {
-                    SessionCreateParams params =
-                            SessionCreateParams.builder()
-                                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                                    .setSuccessUrl("https://example.com/success")
-                                    .setCancelUrl("https://example.com/cancel")
-                                    .addLineItem(
-                                            SessionCreateParams.LineItem.builder()
-                                            .setQuantity(1L)
-                                            .setPriceData(
-                                                    SessionCreateParams.LineItem.PriceData.builder()
-                                                            .setCurrency("usd")
-                                                            .setUnitAmount(availableService.getSalonServiceDetailId().getPrice())
-                                                            .setProductData(
-                                                                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                            .setName(availableService.getSalonServiceDetailId().getName())
-                                                                            .build())
-                                                    .build())
-                                            .build())
-                                    .build();
-                    String requestBody = request.body();
-                    PaymentId paymentId = (requestBody == null || requestBody.isEmpty())?new PaymentId():
-                            new Gson().fromJson(requestBody, PaymentId.class);
+        Map<String,Object> additionalParams = new HashMap<>();
+        // Configure stripe endpoint
+        PaymentIntentCreateParams params = PaymentIntentCreateParams
+                .builder()
+                .setAmount(availableService.getSalonServiceDetailId().getPrice())
+                .setCurrency("usd")
+                .setAutomaticPaymentMethods(
+                        PaymentIntentCreateParams.AutomaticPaymentMethods
+                                .builder()
+                                .setEnabled(true)
+                                .build()
+                )
+                .build();
 
-                   Session session = Session.create(params);
-                    updatePaymentIntent(paymentId.getId(), session.getPaymentIntent());
-                    response.redirect(session.getUrl(), 303);
-                    return "";
-                })
-        );
+        try {
+            return PaymentIntent.create(params);
+        } catch (StripeException e) {
+            throw new SalonException("Payment Intent could not be created "+ e.getMessage());
+        }
+
     }
 
     private Ticket verifyPayment(Long id) throws SalonException {
@@ -128,7 +124,7 @@ public class StripePaymentService {
                 ticket = generateTicket(payment, TicketStatus.BOOKED);
             }else {
                 payment.setStatus(PaymentStatus.FAILED);
-                ticket = generateTicket(null, TicketStatus.UNBOOKED);
+                ticket = generateTicket(payment, TicketStatus.UNBOOKED);
                 throw new SalonException(CustomMapper.mapToPaymentConfirmation(ticket, salonDetails));
             }
             paymentRepository.save(payment);

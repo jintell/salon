@@ -53,7 +53,7 @@ public class StripePayment implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
     @Builder.Default
-    @OneToMany(fetch= FetchType.EAGER, cascade = CascadeType.ALL, mappedBy="payment")
+    @OneToMany(fetch= FetchType.LAZY,mappedBy="payment")
     private List<Ticket> tickets = new ArrayList<>();
 
     @PrePersist

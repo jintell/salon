@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RequestMapping("/api/payments")
-@Api(value = "Salon Service", tags = { "Salon Services API" })
+@Api(value = "Payment Service", tags = { "Payment Services API" })
 @RestController
 @RequiredArgsConstructor
 public class PaymentResource {
